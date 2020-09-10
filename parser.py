@@ -29,7 +29,7 @@ def train_parse(parser: ArgumentParser) -> ArgumentParser:
 
 def hpo_parse(parser: ArgumentParser) -> ArgumentParser:
     parser.add_argument("--hpo_num_samples", default=1, type=int, help="number of HPO trials to do")
-    parser.add_argument("--hpo_min_steps", default=1, type=int, help="number of HPO trial steps to do at minimum")
+    parser.add_argument("--hpo_min_steps", default=5, type=int, help="number of HPO trial steps to do at minimum")
     parser.add_argument("--hpo_max_steps", default=10, type=int, help="number of HPO trial steps to do at maximum")
-    parser.add_argument("--hpo_hp_initial_points", default=10, type=int, help="how many random trials to do before starting proper hpo")
-    parser.add_argument("--hpo_hyperband_brackets", default=3, type=int, help="how many hyperband brackets to run")
+    parser.add_argument("--hpo_hp_initial_points", default=5, type=int, help="how many random trials to do before starting proper hpo")
+    parser.add_argument("--hpo_hyperband_brackets", default=2, type=int, help="how many hyperband brackets to run")

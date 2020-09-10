@@ -25,7 +25,7 @@ def run_hpo(args):
         "lr": hp.uniform("lr", 3e-7, 3e-3),
         "dropout": hp.uniform("dropout", 0.1, 0.9),
         "lr-step": hp.quniform("lr-step", 1, 3, 1),
-        "weight-decay": hp.loguniform("weight-decay", 0.0, 0.1)
+        "weight-decay": hp.loguniform("weight-decay", -5, -2)
     }
     defaults = [{
         "lr": 3e-5,

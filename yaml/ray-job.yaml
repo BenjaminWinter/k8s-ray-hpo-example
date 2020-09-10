@@ -32,7 +32,7 @@ spec:
             - ray start --node-ip-address=$MY_POD_IP --num-cpus=0 --address=$RAY_HEAD_SERVICE_HOST:$RAY_HEAD_SERVICE_PORT_REDIS_PRIMARY --object-manager-port=12345 --node-manager-port=12346 &&
               cd /pvc/publicfs/bwinter/k8s-ray-hpo-example &&
               pip install -r requirements.txt &&
-              python hpo.py --hpo_num_samples 50 --hpo_max_steps 20
+              python hpo.py --hpo_num_samples 25 --hpo_max_steps 5
           volumeMounts:
             - name: publicfs
               mountPath: /pvc/publicfs
