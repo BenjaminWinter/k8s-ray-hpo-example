@@ -1,0 +1,5 @@
+torch
+torchvision
+ray
+hyperopt
+argparse

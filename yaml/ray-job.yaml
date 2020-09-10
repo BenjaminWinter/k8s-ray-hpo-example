@@ -1,0 +1,52 @@
+# Job to run a Ray program in its own pod. Assumes that a cluster is already
+# running (e.g., from './ray-cluster.yaml').
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: bwinter
+  generateName: ray-test-job-
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: private-registry-auth
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: my-ssh-public-key
+            defaultMode: 256
+        - name: publicfs
+          flexVolume:
+            driver: ceph.rook.io/rook
+            fsType: ceph
+            options:
+              fsName: home
+              clusterNamespace: rook-ceph
+      containers:
+        - name: ray-head
+          image: registry.datexis.com/bwinter/commonsense-train:latest
+          imagePullPolicy: Always
+          command: [ "/bin/bash", "-c", "--" ]
+          args:
+            - ray start --node-ip-address=$MY_POD_IP --num-cpus=0 --address=$RAY_HEAD_SERVICE_HOST:$RAY_HEAD_SERVICE_PORT_REDIS_PRIMARY --object-manager-port=12345 --node-manager-port=12346 &&
+              cd /pvc/publicfs/bwinter/k8s-ray-hpo-example &&
+              pip install -r requirements.txt &&
+              python hpo.py --hpo_num_samples 50 --hpo_max_steps 20
+          volumeMounts:
+            - name: publicfs
+              mountPath: /pvc/publicfs
+            - name: ssh-key
+              mountPath: /root/ssh-key
+          ports:
+            - containerPort: 12345 # Ray internal communication.
+            - containerPort: 12346 # Ray internal communication.
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 4000Mi
